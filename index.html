@@ -1,64 +1,82 @@
 <!DOCTYPE html>
-<html lang="tr" data-theme="dark">
+<html lang="tr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>KPSS 2026 Pro</title>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <title>KPSS 2026 Premium Takip</title>
     <style>
-        :root { --bg: #050505; --panel: #0a0a0c; --text: #f8fafc; --primary: #8b5cf6; --muted: #8b92a5; }
-        body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; display: flex; height: 100vh; margin: 0; }
-        #login-view { position: fixed; inset: 0; background: #000; display: flex; align-items: center; justify-content: center; z-index: 999; }
-        .box { background: var(--panel); padding: 40px; border-radius: 20px; width: 350px; text-align: center; border: 1px solid #333; }
-        input { width: 100%; padding: 12px; margin: 10px 0; background: #111; border: 1px solid #333; color: #fff; border-radius: 8px; }
-        button { background: var(--primary); color: #fff; padding: 12px; border-radius: 8px; width: 100%; border: none; cursor: pointer; }
-        .sidebar { width: 250px; border-right: 1px solid #333; padding: 20px; display: flex; flex-direction: column; }
-        .nav-item { padding: 10px; margin-bottom: 5px; cursor: pointer; color: var(--muted); }
-        .nav-item.active { color: var(--primary); font-weight: bold; }
-        .page { display: none; padding: 40px; flex: 1; overflow-y: auto; }
-        .page.active { display: block; }
+        :root { --bg: #050505; --panel: #111; --text: #fff; --primary: #8b5cf6; }
+        body { background: var(--bg); color: var(--text); font-family: sans-serif; margin: 0; display: flex; height: 100vh; }
+        .sidebar { width: 250px; background: var(--panel); border-right: 1px solid #333; padding: 20px; }
+        .nav-item { padding: 15px; cursor: pointer; border-radius: 8px; margin-bottom: 10px; background: #1a1a1a; }
+        .nav-item:hover { background: #222; }
+        .content { flex: 1; padding: 40px; overflow-y: auto; }
+        .folder { background: #1a1a1a; padding: 20px; border-radius: 12px; margin-bottom: 20px; border: 1px solid #333; }
+        .video-row { display: flex; align-items: center; padding: 10px; border-bottom: 1px solid #333; gap: 15px; }
+        #login-box { position: fixed; inset: 0; background: #000; display: flex; align-items: center; justify-content: center; z-index: 999; }
+        .box { background: #111; padding: 40px; border-radius: 20px; text-align: center; border: 1px solid #333; }
+        input { padding: 12px; margin: 10px; width: 200px; background: #222; border: 1px solid #444; color: #fff; border-radius: 5px; }
+        button { background: var(--primary); color: #fff; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; }
     </style>
 </head>
 <body>
 
-    <div id="login-view">
-        <div class="box">
-            <h2>KPSS 2026</h2>
-            <input type="text" id="username" placeholder="Kullanıcı Adı">
-            <input type="password" id="password" placeholder="Şifre: 1234">
-            <button onclick="login()">Giriş Yap</button>
-        </div>
+    <div id="login-box" class="box">
+        <h2>KPSS 2026 Giriş</h2>
+        <input type="password" id="pass" placeholder="Şifre: 1234">
+        <button onclick="check()">Giriş Yap</button>
     </div>
 
-    <div id="app" style="display:none; width: 100%;">
-        <div style="display: flex; height: 100%;">
-            <aside class="sidebar">
-                <div class="nav-item active" onclick="show('videos')">🎬 Videolar</div>
-                <div class="nav-item" onclick="show('calc')">🧮 Hesapla</div>
-            </aside>
-            <main class="content">
-                <div id="videos" class="page active"><h1>Dersler</h1><div id="vid-list"></div></div>
-                <div id="calc" class="page"><h1>Hesapla</h1><input id="net" placeholder="Net Gir"><button onclick="hesapla()">Puan Hesapla</button><div id="sonuc"></div></div>
-            </main>
-        </div>
+    <div id="app" style="display:none; width: 100%; display: flex;">
+        <aside class="sidebar">
+            <div class="nav-item" onclick="show('videos')">🎬 Ders Videoları</div>
+            <div class="nav-item" onclick="show('calc')">🧮 Net Hesapla</div>
+        </aside>
+        <main class="content">
+            <div id="videos" class="page">
+                <div id="video-content"></div>
+            </div>
+            <div id="calc" class="page" style="display:none;">
+                <h2>Net Hesaplama</h2>
+                <input id="net-gir" placeholder="Toplam Net">
+                <button onclick="hesapla()">Puanı Gör</button>
+                <h3 id="puan-sonuc"></h3>
+            </div>
+        </main>
     </div>
 
     <script>
-        function login() {
-            if(document.getElementById('password').value === '1234') {
-                document.getElementById('login-view').style.display = 'none';
-                document.getElementById('app').style.display = 'block';
+        const dersler = [
+            {ad: "Türkçe", sayi: 46}, {ad: "Matematik", sayi: 81}, 
+            {ad: "Tarih", sayi: 60}, {ad: "Coğrafya", sayi: 34}, {ad: "Vatandaşlık", sayi: 48}
+        ];
+
+        function check() {
+            if(document.getElementById('pass').value === '1234') {
+                document.getElementById('login-box').style.display = 'none';
+                document.getElementById('app').style.display = 'flex';
+                initVideos();
             } else { alert('Hatalı!'); }
         }
-        function show(id) {
-            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-            document.getElementById(id).classList.add('active');
-            event.target.classList.add('active');
+
+        function initVideos() {
+            const container = document.getElementById('video-content');
+            dersler.forEach(d => {
+                let html = `<div class="folder"><h3>${d.ad}</h3>`;
+                for(let i=1; i<=d.sayi; i++) {
+                    html += `<div class="video-row"><input type="checkbox"> <span>${i}. Ders</span></div>`;
+                }
+                container.innerHTML += html + `</div>`;
+            });
         }
+
+        function show(id) {
+            document.querySelectorAll('.page').forEach(p => p.style.display = 'none');
+            document.getElementById(id).style.display = 'block';
+        }
+
         function hesapla() {
-            let n = document.getElementById('net').value;
-            document.getElementById('sonuc').innerText = "Tahmini Puan: " + (50 + (n * 0.65)).toFixed(2);
+            let n = document.getElementById('net-gir').value;
+            document.getElementById('puan-sonuc').innerText = "Tahmini Puan: " + (50 + (n * 0.65)).toFixed(2);
         }
     </script>
 </body>
