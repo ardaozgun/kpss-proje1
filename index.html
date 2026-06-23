@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="tr" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KPSS 2026 Pro</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+    <div id="login-view" class="active">
+        <div class="login-box">
+            <h2>KPSS <span>2026</span></h2>
+            <input type="text" id="username" placeholder="Kullanıcı Adı">
+            <input type="password" id="password" placeholder="Şifre: 1234">
+            <button class="btn-primary" id="login-btn">Giriş Yap</button>
+        </div>
+    </div>
+
+    <div id="app-layout" style="display: none;">
+        <aside class="sidebar">
+            <div class="logo">✦ KPSS Takip</div>
+            <nav class="nav-menu">
+                <button class="nav-item active" data-target="videos">🎬 Videolar</button>
+                <button class="nav-item" data-target="calc">🧮 Hesapla</button>
+                <button class="nav-item" data-target="history">📋 Geçmiş</button>
+            </nav>
+        </aside>
+        <main class="content-area">
+            <div id="videos" class="page active"></div>
+            <div id="calc" class="page"></div>
+            <div id="history" class="page"></div>
+        </main>
+    </div>
+
+    <script type="module" src="app.js"></script>
+</body>
+</html>
