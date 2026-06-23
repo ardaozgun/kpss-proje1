@@ -1,0 +1,16 @@
+:root {
+    --bg-dark: #050505; --bg-panel: #0a0a0c; --card-border: rgba(255, 255, 255, 0.08);
+    --primary: #8b5cf6; --text-main: #f8fafc; --text-muted: #8b92a5;
+}
+body { background-color: var(--bg-dark); color: var(--text-main); font-family: 'Inter', sans-serif; display: flex; height: 100vh; margin: 0; }
+.sidebar { width: 280px; background: var(--bg-panel); border-right: 1px solid var(--card-border); padding: 30px; }
+.logo { font-size: 20px; font-weight: 800; color: #fff; margin-bottom: 50px; }
+.nav-menu { display: flex; flex-direction: column; gap: 10px; }
+.nav-item { padding: 12px; border-radius: 8px; color: var(--text-muted); font-weight: 600; text-align: left; }
+.nav-item.active { background: rgba(139, 92, 246, 0.1); color: var(--primary); }
+.content-area { flex: 1; padding: 40px; overflow-y: auto; }
+.page { display: none; }
+.page.active { display: block; }
+.login-box { background: var(--bg-panel); padding: 40px; border-radius: 20px; width: 360px; border: 1px solid var(--card-border); text-align: center; }
+.btn-primary { background: var(--primary); color: #fff; padding: 12px; border-radius: 8px; width: 100%; font-weight: 700; }
+input { background: #000; border: 1px solid var(--card-border); padding: 12px; border-radius: 8px; width: 100%; color: #fff; margin-bottom: 15px; }
