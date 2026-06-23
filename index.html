@@ -4,35 +4,62 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>KPSS 2026 Pro</title>
-    <link rel="stylesheet" href="styles.css">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        :root { --bg: #050505; --panel: #0a0a0c; --text: #f8fafc; --primary: #8b5cf6; --muted: #8b92a5; }
+        body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; display: flex; height: 100vh; margin: 0; }
+        #login-view { position: fixed; inset: 0; background: #000; display: flex; align-items: center; justify-content: center; z-index: 999; }
+        .box { background: var(--panel); padding: 40px; border-radius: 20px; width: 350px; text-align: center; border: 1px solid #333; }
+        input { width: 100%; padding: 12px; margin: 10px 0; background: #111; border: 1px solid #333; color: #fff; border-radius: 8px; }
+        button { background: var(--primary); color: #fff; padding: 12px; border-radius: 8px; width: 100%; border: none; cursor: pointer; }
+        .sidebar { width: 250px; border-right: 1px solid #333; padding: 20px; display: flex; flex-direction: column; }
+        .nav-item { padding: 10px; margin-bottom: 5px; cursor: pointer; color: var(--muted); }
+        .nav-item.active { color: var(--primary); font-weight: bold; }
+        .page { display: none; padding: 40px; flex: 1; overflow-y: auto; }
+        .page.active { display: block; }
+    </style>
 </head>
 <body>
-    <div id="login-view" class="active">
-        <div class="login-box">
-            <h2>KPSS <span>2026</span></h2>
+
+    <div id="login-view">
+        <div class="box">
+            <h2>KPSS 2026</h2>
             <input type="text" id="username" placeholder="Kullanıcı Adı">
             <input type="password" id="password" placeholder="Şifre: 1234">
-            <button class="btn-primary" id="login-btn">Giriş Yap</button>
+            <button onclick="login()">Giriş Yap</button>
         </div>
     </div>
 
-    <div id="app-layout" style="display: none;">
-        <aside class="sidebar">
-            <div class="logo">✦ KPSS Takip</div>
-            <nav class="nav-menu">
-                <button class="nav-item active" data-target="videos">🎬 Videolar</button>
-                <button class="nav-item" data-target="calc">🧮 Hesapla</button>
-                <button class="nav-item" data-target="history">📋 Geçmiş</button>
-            </nav>
-        </aside>
-        <main class="content-area">
-            <div id="videos" class="page active"></div>
-            <div id="calc" class="page"></div>
-            <div id="history" class="page"></div>
-        </main>
+    <div id="app" style="display:none; width: 100%;">
+        <div style="display: flex; height: 100%;">
+            <aside class="sidebar">
+                <div class="nav-item active" onclick="show('videos')">🎬 Videolar</div>
+                <div class="nav-item" onclick="show('calc')">🧮 Hesapla</div>
+            </aside>
+            <main class="content">
+                <div id="videos" class="page active"><h1>Dersler</h1><div id="vid-list"></div></div>
+                <div id="calc" class="page"><h1>Hesapla</h1><input id="net" placeholder="Net Gir"><button onclick="hesapla()">Puan Hesapla</button><div id="sonuc"></div></div>
+            </main>
+        </div>
     </div>
 
-    <script type="module" src="app.js"></script>
+    <script>
+        function login() {
+            if(document.getElementById('password').value === '1234') {
+                document.getElementById('login-view').style.display = 'none';
+                document.getElementById('app').style.display = 'block';
+            } else { alert('Hatalı!'); }
+        }
+        function show(id) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+            event.target.classList.add('active');
+        }
+        function hesapla() {
+            let n = document.getElementById('net').value;
+            document.getElementById('sonuc').innerText = "Tahmini Puan: " + (50 + (n * 0.65)).toFixed(2);
+        }
+    </script>
 </body>
 </html>
